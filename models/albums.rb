@@ -45,6 +45,20 @@ class Album
     db.close()
   end
 
+  def update()
+    db = PG.connect({dbname: 'music_shop', host: 'localhost'})
+    sql = 'UPDATE albums SET(
+    name
+    ) = (
+    $1, $2, $3
+    )
+    WHERE id = $4'
+    values = [@title, @genre, @artist_id, @id]
+    db.prepare('update', sql)
+    db.exec_prepared('update', values)
+    db.close()
+  end
+
   def Album.all()
     db = PG.connect({dbname: 'music_app', host: 'localhost'})
     sql = 'SELECT * FROM albums;'
@@ -52,6 +66,13 @@ class Album
     albums = db.exec_prepared('all', [])
     db.close()
     return albums.map{ |album_array| Album.new( album_array )}
+  end
+
+  def Album.delete_all()
+    db = PG.connect({dbname: 'music_app', host: 'localhost'})
+    sql = 'DELETE FROM albums;'
+    db.exec(sql)
+    db.close
   end
 
 end

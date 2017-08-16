@@ -42,11 +42,35 @@ class Artist
 
   def Artist.all()
     db = PG.connect({dbname: 'music_app', host: 'localhost'})
-    sql = 'SELECT * FROM artists'
+    sql = 'SELECT * FROM artists;'
     db.prepare('all', sql)
     artists = db.exec_prepared('all', [])
     db.close()
     return artists.map{ |artist| Artist.new( artist )}
   end
+
+  def Artist.delete_all()
+    db = PG.connect({dbname: 'music_app', host: 'localhost'})
+    sql = 'DELETE FROM artists;'
+    db.prepare('delete_all', sql)
+    db.exec_prepared('delete_all', [])
+    db.close()
+  end
+
+  def update()
+    db = PG.connect({dbname: 'music_shop', host: 'localhost'})
+    sql = 'UPDATE artists SET(
+    name
+    ) = (
+    $1
+    )
+    WHERE id = $2'
+    values = [@name]
+    db.prepare('update', sql)
+    db.exec_prepared('update', values)
+    db.close()
+  end
+
+
 
 end
