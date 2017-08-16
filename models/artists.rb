@@ -10,6 +10,19 @@ class Artist
     @name = artist_details['name']
   end
 
+  def album()
+    db = PG.connect({dbname: 'music_app', host: 'localhost'})
+    sql = 'SELECT * FROM albums
+    WHERE artist_id = $1;'
+    db.prepare('album', sql)
+    result_array = db.exec_prepared('album', [@id])
+    album_object = result_array.map{ |album| Album.new(album)}
+    # album_array = result_array[0]
+    # album_object = Album.new( album_array )
+    db.close()
+    return album_object
+  end
+
   def save()
     db = PG.connect({dbname: 'music_app', host: 'localhost'})
     sql = '
